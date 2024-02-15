@@ -1,4 +1,4 @@
-# # TalkNet+DeiT
+# TalkNet+DeiT
 
 >[**IMPROVING AUDIOVISUAL ACTIVE SPEAKER DETECTION IN EGOCENTRIC RECORDINGS WITH THE DATA-EFFICIENT IMAGE TRANSFORMER**]
 > ASRU 2023
@@ -11,7 +11,7 @@ This work extends the [TalkNet-ASD](https://github.com/TaoRuijie/TalkNet_ASD/blo
 
 Preprocessing scripts have been slightly modified from the [Ego4D-AVD benchmark implementation of TalkNet](https://github.com/zcxu-eric/Ego4d_TalkNet_ASD).
 
-# From Scratch
+### From Scratch
 To start from scratch without any prior processed annotation, you must have the file structure outlined [here](https://github.com/zcxu-eric/Ego4d_TalkNet_ASD), specifically, as follows:
 data/
 * json/
@@ -34,7 +34,7 @@ python utils/annot_preprocess.py --basePath {path to Ego4d_TalkNet_ASD} --split 
 python utils/annot_preprocess.py --basePath {path to Ego4d_TalkNet_ASD} --split test
 ```
 
-# With Existing Processed Annotation
+### With Existing Processed Annotation
 
 If annotation already exists for the csv files and bounding box jsons, ensure they are structued as per the standard Ego4d_TalkNet_ASD folder:
 Ego4d_TalkNet_ASD/
@@ -51,7 +51,7 @@ Ego4d_TalkNet_ASD/
         * bbox/
             * ...
 
-# Tensor Preprocessing
+### Tensor Preprocessing
 
 The following code can be used to preprocess the tensors in Ego4D to significantly reduce training time. The code preprocesses the visual components of Ego4D-AVD into trackwise pytorch tensors for TalkNet+DeiT and should be ran in parallel across multiple HPC sessions simultaneously.
 
@@ -80,7 +80,7 @@ python trainTalkNetDeiT.py
 python inferTalkNetDeiT.py
 ```
 
-### Citation
+## Citation
 
 This work builds upon existing work so please cite the following:
 ```
