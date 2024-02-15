@@ -119,7 +119,7 @@ def generate_infer(basePath):
 
     res2video = { i:video for i, video in enumerate(videos) }
     video2res = { video:i for i, video in enumerate(videos) }
-    with open(f'{basePath}/data/split/val.list', 'r') as f:
+    with open(f'{basePath}/data/split/val.list', 'r') as f: ## needs changing to test for actual Ego4D inference
         videos = [line.strip() for line in f.readlines()]
     tracklets = [f'{basePath}/data/track_results/{v}.txt' for v in videos]
     for tracklet in tqdm(sorted(tracklets)):
