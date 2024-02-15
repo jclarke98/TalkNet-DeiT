@@ -126,7 +126,7 @@ class SaveAsTensor():
             # create a flag file and save it as direc/flag
             os.makedirs(f'{direc}/flag', exist_ok=True)
             print('processing track: ', data[0])
-            if args.split == 'test':
+            if args.forInfer == True:
                 trackid = data[0]
                 with open(f'{self.track_direc}/{trackid}.json', 'r') as f:
                     bbox = json.load(f)
@@ -148,7 +148,7 @@ class SaveAsTensor():
         direc = os.path.join(self.savePath, data[0])
         if not all(file in os.listdir(direc) for file in ["faces.pt", "images.pt", "p_ss.pt"]):
             print('filling missing files in: ', data[0])
-            if args.split == 'test':
+            if args.forInfer == True:
                 trackid = data[0]
                 with open(f'{self.track_direc}/{trackid}.json', 'r') as f:
                     bbox = json.load(f)
@@ -175,10 +175,16 @@ class SaveAsTensor():
         dets = {'x':[], 'y':[], 's':[]}
         for frame in frames:
             frameid = frame['frame']
-            x1 = frame['x']
-            y1 = frame['y']
-            x2 = frame['x'] + frame['width']
-            y2 = frame['y'] + frame['height']
+            if args.forInfer == True:
+                x1 = frame['x1']
+                y1 = frame['y1']
+                x2 = frame['x2']
+                y2 = frame['y2']
+            else:
+                x1 = frame['x']
+                y1 = frame['y']
+                x2 = frame['x'] + frame['width']
+                y2 = frame['y'] + frame['height']
             p_ss.append([x1, y1, x2, y2]) # should add smoothing here when not using ground truth localisation
             dets['s'].append(max((y2-y1), (x2-x1))/2)
             dets['y'].append((y2+y1)/2) # crop center x
@@ -243,6 +249,7 @@ if __name__ == '__main__':
         help = "path to where the tensors will be saved")
     parser.add_argument('--split', type = str, default = 'train')
     parser.add_argument('--fillPass', action='store_true', help='Fill embeddings missed during multiprocessing')
+    parser.add_argument('--forInfer', action='store_true', help='Inference or train/val?')
     args = parser.parse_args()
 
     tensorgrabber = SaveAsTensor(args.dataPath, args.annotPath, args.split, args.savePath, args.fillPass)

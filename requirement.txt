@@ -11,3 +11,5 @@ torchvision
 ffmpeg
 gdown
 youtube-dl
+pandas
+transformers

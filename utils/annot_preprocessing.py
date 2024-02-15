@@ -110,6 +110,8 @@ def generate_trainval(basePath, split):
                 
             asd_records.extend(record)
     print(f'Inconsistent frames: {inconsistent_frames} out of {total_frames} total frames')
+    asd_records = pd.DataFrame(asd_records)
+    asd_records.to_csv(f'{basePath}/data/ego4d/csv/active_speaker_{split}.csv', header=None, index=False, sep='\t')
 
 def generate_infer(basePath):
     asd_records = []
@@ -186,7 +188,7 @@ def generate_infer(basePath):
 
 
     asd_records = pd.DataFrame(asd_records)
-    asd_records.to_csv(f'{basePath}/data/infer/csv/active_speaker_test.csv', header=None, index=False, sep='\t')
+    asd_records.to_csv(f'{basePath}/data/infer/csv/active_speaker_val.csv', header=None, index=False, sep='\t')
 
 
 def run():
