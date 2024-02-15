@@ -15,7 +15,6 @@ csv.field_size_limit(sys.maxsize)
 def generate_from_pretained_tracker(split='test'):
     direc = '/home/acp21jrc/Ego4D/audio-visual/active-speaker-detection/active_speaker/TalkNet_ASD/Ego4d_TalkNet_ASD/data/track_results/'
     asd_records = []
-
     with open('./data/track_results/v.txt', 'r') as f:
         videos = f.readlines()
     res2video = { i:video.split('/')[-1][:-5] for i, video in enumerate(videos) }

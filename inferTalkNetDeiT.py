@@ -1,9 +1,8 @@
-# Usage: python inferTalkNetDeiT.py --nDataLoaderThread 12 --evalDataType test
+# Usage: python inferTalkNetDeiT.py --nDataLoaderThread 12
 
 import torch, argparse, warnings
 
 from dataLoader import test_loader
-from utils.tools import *
 from ASD import ASD
 
 def main():
@@ -20,16 +19,14 @@ def main():
     parser.add_argument('--dataPath',  type=str, default="/mnt/parscratch/users/acp21jrc/ego4d_data/v2/data/tensors/")
     # Data selection
     parser.add_argument('--evalDataType', type=str, default="val", help='Choose the dataset for evaluation, val or test')
-    parser.add_argument('--checkpoint',  type=str, default="/mnt/parscratch/users/acp21jrc/exps_TalkNet_ViT_1_att_head/exp/0.0/model/model_0014.model", help='Model checkpoint')
+    parser.add_argument('--checkpoint',  type=str, default="Ego4D_best.model", help='Model checkpoint')
     parser.add_argument('--contextLossContribution', type=float, default=0.4, help='The contribution of context loss')
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print('available device:', device)
 
     args = parser.parse_args()
-    # Data loader
-    args = init_args(args)
-
+    
     loader = test_loader(annotPath      = args.annotPath, \
                          audioPath      = args.audioPath, \
                          dataPath       = args.dataPath, 

@@ -334,64 +334,64 @@ class val_loader(object):
 #         return len(self.miniBatch)
 
 
-def load_visual_predict(data, dataPath, numFrames, visualAug): 
-    trackid = data[0]
-    videoName = data[0][:36]
-    faceFolderPath = os.path.join(dataPath, videoName)
-    with open(f'/users/acp21jrc/audio-visual/active-speaker-detection/active_speaker/TalkNet_ASD/Ego4d_TalkNet_ASD/data/infer/bbox/{trackid}.json', 'r') as f:
-        bbox = json.load(f)
-    frames = bbox
-    faces = []
-    H = 112
-    if visualAug == True:
-        new = int(H*random.uniform(0.7, 1))
-        x, y = numpy.random.randint(0, H - new), numpy.random.randint(0, H - new)
-        M = cv2.getRotationMatrix2D((H/2,H/2), random.uniform(-15, 15), 1)
-        augType = random.choice(['orig', 'flip', 'crop', 'rotate']) 
-    else:
-        augType = 'orig'
-    dets = {'x':[], 'y':[], 's':[]}
-    for frame in frames:
-        frameid = frame['frame']
-        x1 = frame['x1']
-        y1 = frame['y1']
-        x2 = frame['x2']
-        y2 = frame['y2']
-        dets['s'].append(max((y2-y1), (x2-x1))/2) 
-        dets['y'].append((y2+y1)/2) # crop center x 
-        dets['x'].append((x2+x1)/2) # crop center y
-    kernel_size = min((len(dets['s'])-len(dets['s'])%2+1), 13)
-    dets['s'] = signal.medfilt(dets['s'], kernel_size=kernel_size)  # Smooth detections 
-    dets['x'] = np.array(dets['x'])
-    dets['x'][1:] = dets['x'][:-1]*0.8 + dets['x'][1:]*0.2
-    dets['y'] = np.array(dets['y'])
-    dets['y'][1:] = dets['y'][:-1]*0.8 + dets['y'][1:]*0.2
+# def load_visual_predict(data, dataPath, numFrames, visualAug): 
+#     trackid = data[0]
+#     videoName = data[0][:36]
+#     faceFolderPath = os.path.join(dataPath, videoName)
+#     with open(f'/users/acp21jrc/audio-visual/active-speaker-detection/active_speaker/TalkNet_ASD/Ego4d_TalkNet_ASD/data/infer/bbox/{trackid}.json', 'r') as f:
+#         bbox = json.load(f)
+#     frames = bbox
+#     faces = []
+#     H = 112
+#     if visualAug == True:
+#         new = int(H*random.uniform(0.7, 1))
+#         x, y = numpy.random.randint(0, H - new), numpy.random.randint(0, H - new)
+#         M = cv2.getRotationMatrix2D((H/2,H/2), random.uniform(-15, 15), 1)
+#         augType = random.choice(['orig', 'flip', 'crop', 'rotate']) 
+#     else:
+#         augType = 'orig'
+#     dets = {'x':[], 'y':[], 's':[]}
+#     for frame in frames:
+#         frameid = frame['frame']
+#         x1 = frame['x1']
+#         y1 = frame['y1']
+#         x2 = frame['x2']
+#         y2 = frame['y2']
+#         dets['s'].append(max((y2-y1), (x2-x1))/2) 
+#         dets['y'].append((y2+y1)/2) # crop center x 
+#         dets['x'].append((x2+x1)/2) # crop center y
+#     kernel_size = min((len(dets['s'])-len(dets['s'])%2+1), 13)
+#     dets['s'] = signal.medfilt(dets['s'], kernel_size=kernel_size)  # Smooth detections 
+#     dets['x'] = np.array(dets['x'])
+#     dets['x'][1:] = dets['x'][:-1]*0.8 + dets['x'][1:]*0.2
+#     dets['y'] = np.array(dets['y'])
+#     dets['y'][1:] = dets['y'][:-1]*0.8 + dets['y'][1:]*0.2
 
-    for i, frame in enumerate(frames): 
-        frameid = frame['frame'] = frame['frame']
-        img = cv2.imread(f'{faceFolderPath}/img_{int(frameid):05d}.jpg')
-        cs  = 0.4
-        bs  = dets['s'][i]
-        bsi = int(bs * (1 + 2 * cs))  # Pad videos by this amount 
-        img = numpy.pad(img, ((bsi,bsi), (bsi,bsi), (0, 0)), 'constant', constant_values=(110, 110))
-        my  = dets['y'][i] + bsi  # BBox center Y
-        mx  = dets['x'][i] + bsi  # BBox center X
-        face = img[int(my-bs):int(my+bs*(1+2*cs)),int(mx-bs*(1+cs)):int(mx+bs*(1+cs))]
-        face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-        face = cv2.resize(face, (2*H,2*H))
-        face = face[int(112-(112/2)):int(112+(112/2)), int(112-(112/2)):int(112+(112/2))]
+#     for i, frame in enumerate(frames): 
+#         frameid = frame['frame'] = frame['frame']
+#         img = cv2.imread(f'{faceFolderPath}/img_{int(frameid):05d}.jpg')
+#         cs  = 0.4
+#         bs  = dets['s'][i]
+#         bsi = int(bs * (1 + 2 * cs))  # Pad videos by this amount 
+#         img = numpy.pad(img, ((bsi,bsi), (bsi,bsi), (0, 0)), 'constant', constant_values=(110, 110))
+#         my  = dets['y'][i] + bsi  # BBox center Y
+#         mx  = dets['x'][i] + bsi  # BBox center X
+#         face = img[int(my-bs):int(my+bs*(1+2*cs)),int(mx-bs*(1+cs)):int(mx+bs*(1+cs))]
+#         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+#         face = cv2.resize(face, (2*H,2*H))
+#         face = face[int(112-(112/2)):int(112+(112/2)), int(112-(112/2)):int(112+(112/2))]
 
-        if augType == 'orig':
-            faces.append(face)
-        elif augType == 'flip':
-            faces.append(cv2.flip(face, 1))
-        elif augType == 'crop':
-            faces.append(cv2.resize(face[y:y+new, x:x+new] , (H,H))) 
-        elif augType == 'rotate':
-            faces.append(cv2.warpAffine(face, M, (H,H)))
+#         if augType == 'orig':
+#             faces.append(face)
+#         elif augType == 'flip':
+#             faces.append(cv2.flip(face, 1))
+#         elif augType == 'crop':
+#             faces.append(cv2.resize(face[y:y+new, x:x+new] , (H,H))) 
+#         elif augType == 'rotate':
+#             faces.append(cv2.warpAffine(face, M, (H,H)))
 
-    faces = numpy.array(faces[:numFrames])
-    return faces
+#     faces = numpy.array(faces[:numFrames])
+#     return faces
 
 
 # class test_loader(object):   ###### for preprocessed tensor dataloading
