@@ -56,17 +56,21 @@ Ego4d_TalkNet_ASD/
 The following code can be used to preprocess the tensors in Ego4D to significantly reduce training time. The code preprocesses the visual components of Ego4D-AVD into trackwise pytorch tensors for TalkNet+DeiT and should be ran in parallel across multiple HPC sessions simultaneously.
 
 training & validation folds: 
-```   python tensor_grabber.py --annotPath {path to ego4d/csv & bbox} --split {train/val} --dataPath {path to video_imgs} --savePath {path to save tensors}
+```
+python tensor_grabber.py --annotPath {path to ego4d/csv & bbox} --split {train/val} --dataPath {path to video_imgs} --savePath {path to save tensors}
 ```
 Evaluation fold:
-```python tensor_grabber.py --annotPath {path to infer/csv & bbox} --split val --dataPath {path to video_imgs} --savePath {path to save tensors}
+```
+python tensor_grabber.py --annotPath {path to infer/csv & bbox} --split val --dataPath {path to video_imgs} --savePath {path to save tensors}
 ```
 Run across single session to fill any missing tracks:
 training & validatoin folds:
-```   python tensor_grabber.py --annotPath {path to ego4d/csv & bbox} --split {train/val} --dataPath {path to video_imgs} --savePath {path to save tensors} --fillPass
+```
+python tensor_grabber.py --annotPath {path to ego4d/csv & bbox} --split {train/val} --dataPath {path to video_imgs} --savePath {path to save tensors} --fillPass
 ```
 Evaluation fold:
-```   python tensor_grabber.py --annotPath {path to infer/csv & bbox} --split val --dataPath {path to video_imgs} --savePath {path to save tensors} --fillPass```
+```python tensor_grabber.py --annotPath {path to infer/csv & bbox} --split val --dataPath {path to video_imgs} --savePath {path to save tensors} --fillPass
+```
 
 ## Model Training
 
