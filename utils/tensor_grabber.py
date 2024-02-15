@@ -88,7 +88,11 @@ class SaveAsTensor():
     def __init__(self, dataPath, annotPath, split, savePath, fill_pass = False):
         self.dataPath = dataPath
         self.miniBatch = []      
-        self.savePath = os.path.join(savePath, split)
+        if args.forInfer == True:
+            self.savePath = os.path.join(savePath, 'forInfer', split)
+        else:
+            self.savePath = os.path.join(savePath, split)
+        
         self.feature_extractor = ViTFeatureExtractor.from_pretrained('facebook/deit-tiny-patch16-224')
         self.track_direc = os.path.join(annotPath, 'bbox')
         self.fill_pass = fill_pass
