@@ -1,3 +1,19 @@
+# Modified original generate function found in Ego4d_TalkNet_ASD/utils/preprocessing.py
+# to generate trackwise .json files containing bounding boxes of all faces present in each frame
+# (including the candidate speaker), additionally modified the trackwise .json file for the candidadate speaker
+# to include the pid of the candidate speaker for the track. This was necessary because vid:trackid:step 
+# does not include pid information, vid refers to the parent video clip, trackid refers to the 
+# contiguous track, and step refers to the iteration of the contiguous track, i.e. if track 0
+# contains 850 contiguous frames, then there will be 3 steps intotal (300 frams, 300 frames, 250 frames).
+
+# Assumes standard Ego4d_AVD directory configuration: Ego4d_TalkNet_ASD/data/split; Ego4d_TalkNet_ASD/data/json; Ego4D_TalkNet_ASD/data/track_results
+
+# to run for train/val:
+#   python annot_preprocessing.py --basePath {path to Ego4d_TalkNet_ASD} --split {train/val}
+# to run for test (Ego4D-AVD reconfigured validation fold):
+#   python annot_preprocessing.py --basePath {path to Ego4d_TalkNet_ASD} --split test
+
+
 from tqdm import tqdm
 from collections import defaultdict
 import pandas as pd
@@ -6,17 +22,7 @@ import argparse
 import os
 
 def generate_trainval(basePath, split):
-    """Modified original generate function found in Ego4d_TalkNet_ASD/utils/preprocessing.py
-    to generate trackwise .json files containing bounding boxes of all faces present in each frame
-    (including the candidate speaker), additionally modified the trackwise .json file for the candidadate speaker
-    to include the pid of the candidate speaker for the track. This was necessary because vid:trackid:step 
-    does not include pid information, vid refers to the parent video clip, trackid refers to the 
-    contiguous track, and step refers to the iteration of the contiguous track, i.e. if track 0
-    contains 850 contiguous frames, then there will be 3 steps intotal (300 frams, 300 frames, 250 frames).
-    
-    Assumes lists containing the video fold splits and the av_{split}.json files are in the standard Ego4D-AVD directory
-    configuration (splits: Ego4d_TalkNet_ASD/data/{train,val,test}, json: Ego4d_TalkNet_ASD/data/json/av_{train,val,test}.json).
-
+    """
         Parameters:
             basePath (str): The directory containing the list of video clips and the av_{split}.json files
             split (str): The split of the dataset (val or test)
