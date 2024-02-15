@@ -1,24 +1,60 @@
-# EGO4D Audio Visual Diarization Benchmark
+# # TS-TalkNet
 
-The Audio-Visual Diarization (AVD) benchmark corresponds to characterizing _low-level_ information about conversational scenarios in the [EGO4D](https://ego4d-data.org/docs/) dataset.  This includes tasks focused on detection, tracking, segmentation of speakers and transcirption of speech content. To that end, we are proposing 4 tasks in this benchmark. 
 
-For more information on Ego4D or to download the dataset, read: [Start Here](https://ego4d-data.org/docs/start-here/).
+> [**Target Active Speaker Detection with Audio-visual Cues**](https://arxiv.org/abs/2305.12831)<br>
+> [Yidi Jiang](https://scholar.google.com/citations?user=le6gC58AAAAJ&hl=en&oi=ao), [Ruijie Tao](https://scholar.google.com/citations?user=sdXITx8AAAAJ&hl=en), [Zexu Pan](https://scholar.google.com/citations?user=GGIBU74AAAAJ&hl=en), [Haizhou Li](https://colips.org/~eleliha/)<br>
+> NUS; CUHK <br>
+> INTERSPEECH 2023
 
-Overall >750 hours of conversational data is provided in the first version of the AVD dataset. Out of this approximately 50 hours of data has been annotated to support these tasks. This corresponds to 572 clips. Of these 389 are training, 50 are validation and the remaining will are used for testing. 
-Each clip is 5 minutes long.  The following schema summarizes some data statistics of the clips.
-Speakers per clip : 4.71  
-Speakers per frame : 0.74  
-Speaking time in clip : 219.81 sec  
-Speaking time per person in clip : 43.29 sec  
-Camera wearer speaking time : 77.64 sec
+![image](https://github.com/Jiang-Yidi/TS-TalkNet/blob/main/overview.png)
 
-Please refer to this link for detailed annotations schema. 
-https://ego4d-data.org/docs/benchmarks/av-diarization/#annotation-schema
+The overview framework of our TS-TalkNet. It consists of a feature representation frontend and a speaker detection backend classifier. The feature representation frontend includes audio and visual temporal encoders, and speaker encoder. The speaker detection backend comprises a cross-attention and a fusion module to combine the audio, visual and speaker embeddings, and a self-attention module to predict the ASD scores. The lock represents the speaker encoder is frozen in our framework.
 
-To summarise for audio annotation:
-active_speaker_train.csv contains the video trackwise annotations for speech activity for all videos in the training fold.
-The schema is of shape:
-	Meta data (video name: trackid: step in track), duration of clip in video frames, video fps, array of frame wise speech activity, start frame of video track
-	
-df = pd.read_csv(f'{direc}/active_speaker_train.csv', names = ['meta', 'duration', 'fps', 'activity?', 'start'], delimiter = '\t')
-# When opening the csv does not recognise the 'activity?' column as a list, instead it recognises it as a string hence the discrepency in duration and length of activity?.
+## TS-TalkNet in AVA-Activespeaker dataset
+
+#### Data preparation
+
+I follow the same prepocessing for AVA dataset as [TalkNet](https://arxiv.org/pdf/2107.06592.pdf). The details can be found in [here](https://github.com/TaoRuijie/TalkNet_ASD/blob/main/utils/tools.py#L34).
+
+The following script can be used to download and prepare the AVA dataset for training.
+
+```
+python train.py --dataPathAVA AVADataPath --download 
+```
+
+`AVADataPath` is the folder you want to save the AVA dataset and its preprocessing outputs
+
+#### Face-speaker library
+
+You should run the data_prep/face_enroll_speech.py file to construct the face-speaker library and save the enrollement audios for target speaker to 'enrolPath'.
+
+The face recognition model we used is a [ResNet50-Glint](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch) model trained on the Glint360K dataset. 
+The pretrained V-Glint.model you can find [here](https://drive.google.com/drive/folders/1W3c6V5bfGZTfwJLJq6ORSXXCLAsG7l2U).
+
+#### Training
+Then you can train TalkNet in AVA end-to-end by using:
+```
+python train.py --dataPathAVA AVADataPath --enroll_speech_folder enrolPath
+```
+`exps/exps1/score.txt`: output score file, `exps/exp1/model/model_00xx.model`: trained model,
+
+
+### Citation
+
+Please cite the following if our paper or code is helpful to your research.
+```
+@inproceedings{jiang2023target,
+  title={Target Active Speaker Detection with Audio-visual Cues},
+  author={Jiang, Yidi and Tao, Ruijie and Pan, Zexu and Li, Haizhou},
+  booktitle={Proc. Interspeech},
+  year={2023}
+}
+
+@inproceedings{tao2021someone,
+  title={Is Someone Speaking? Exploring Long-term Temporal Features for Audio-visual Active Speaker Detection},
+  author={Tao, Ruijie and Pan, Zexu and Das, Rohan Kumar and Qian, Xinyuan and Shou, Mike Zheng and Li, Haizhou},
+  booktitle = {Proceedings of the 29th ACM International Conference on Multimedia},
+  pages = {3927–3935},
+  year={2021}
+}
+```
