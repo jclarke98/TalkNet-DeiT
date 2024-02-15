@@ -12,7 +12,15 @@ def generate_trainval(basePath, split):
     to include the pid of the candidate speaker for the track. This was necessary because vid:trackid:step 
     does not include pid information, vid refers to the parent video clip, trackid refers to the 
     contiguous track, and step refers to the iteration of the contiguous track, i.e. if track 0
-    contains 850 contiguous frames, then there will be 3 steps intotal (300 frams, 300 frames, 250 frames)."""
+    contains 850 contiguous frames, then there will be 3 steps intotal (300 frams, 300 frames, 250 frames).
+    
+    Assumes lists containing the video fold splits and the av_{split}.json files are in the standard Ego4D-AVD directory
+    configuration (splits: Ego4d_TalkNet_ASD/data/{train,val,test}, json: Ego4d_TalkNet_ASD/data/json/av_{train,val,test}.json).
+
+        Parameters:
+            basePath (str): The directory containing the list of video clips and the av_{split}.json files
+            split (str): The split of the dataset (val or test)
+      """
 
     with open(f'{basePath}/data/json/av_{split}.json', 'r') as f:
         ori_annot = json.load(f)
