@@ -3,7 +3,7 @@
 >[**IMPROVING AUDIOVISUAL ACTIVE SPEAKER DETECTION IN EGOCENTRIC RECORDINGS WITH THE DATA-EFFICIENT IMAGE TRANSFORMER**]
 > ASRU 2023
 
-![image](https://github.com/jclarke98/TalkNet+DeiT/blob/main/TalkNet+DeiT_1.png)
+![image](https://github.com/jclarke98/TalkNet-DeiT/blob/main/TalkNet%2BDeiT_1.png)
 
 This work extends the [TalkNet-ASD](https://github.com/TaoRuijie/TalkNet_ASD/blob/main/utils/tools.py#L34) architecture with the [Data Efficient image Transformer](https://arxiv.org/abs/2012.12877) to inject contextual information provided by full-scene images to help compensate for the noise present in egocentric recordings.
 
